@@ -115,11 +115,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Mac cruft
+# Mac Cruft
 .DS_Store
 
 # VSCode
 .vscode
 
-# Databases
+# databases
 *.db3

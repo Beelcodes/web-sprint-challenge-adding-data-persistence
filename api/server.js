@@ -1,23 +1,23 @@
-// build your server here and require it from index.js
-const express = require('express')
-const projectsRouter = require('./project/router')
-const resourcesRouter = require('./resource/router')
-const tasksRouter = require('./task/router')
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
 
-const server = express()
+const restrict = require('./middleware/restricted.js');
 
-server.use(express.json())
+const authRouter = require('./auth/auth-router.js');
+const jokesRouter = require('./jokes/jokes-router.js');
 
-server.use('/api/projects', projectsRouter)
-server.use('/api/resources', resourcesRouter)
-server.use('/api/tasks', tasksRouter)
+const server = express();
 
-server.use('*', (req, res) => {
-    res.status(404).json({ message: `${req.method} ${req.baseUrl} is not a valid address`})
-})
+server.use(helmet());
+server.use(cors());
+server.use(express.json());
+
+server.use('/api/auth', authRouter);
+server.use('/api/jokes', restrict, jokesRouter); // only logged-in users should have access!
 
 server.use((err, req, res, next) => {
-    res.status(err.status || 500).json({message: ` Error: ${err.message}`})
+    res.status(err.status || 500).json({message: `${err.message}`})
 })
 
 module.exports = server;
